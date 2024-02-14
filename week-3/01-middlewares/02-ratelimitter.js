@@ -16,6 +16,24 @@ setInterval(() => {
     numberOfRequestsForUser = {};
 }, 1000)
 
+app.use(function(req,res,next){
+  const userid = req.headers['user-id']
+
+ 
+ if( numberOfRequestsForUser[userid]){
+  numberOfRequestsForUser[userid]++
+  if(numberOfRequestsForUser[userid]>5){
+    res.status(404).send("limit exceded")
+  }else{
+    next()
+  }
+ }else{
+  numberOfRequestsForUser[userid]=1
+  next()
+ }
+
+})
+
 app.get('/user', function(req, res) {
   res.status(200).json({ name: 'john' });
 });
